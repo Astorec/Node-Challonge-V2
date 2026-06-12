@@ -1,8 +1,9 @@
 const Station = require("../models/station");
-
-class StationService {
+const baseService = require("./base");
+const { buildPath, buildQueryParams, PATHS } = require("../constants");
+class StationService extends baseService {
   constructor(client) {
-    this.client = client;
+    super(client);
   }
 
   async list(tournamentId, matchId) {
@@ -12,9 +13,10 @@ class StationService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/stations`,
+        buildPath(PATHS.STATIONS.LIST, tournamentId, matchId),
         "GET",
       );
+      this.throwIfErrors(response);
       return Station.fromListResponse(response);
     } catch (error) {
       console.error("Error listing stations:", error.message);
@@ -29,9 +31,10 @@ class StationService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/stations/${stationId}`,
+        buildPath(PATHS.STATIONS.GET, tournamentId, matchId, stationId),
         "GET",
       );
+      this.throwIfErrors(response);
       return Station.fromSingleResponse(response);
     } catch (error) {
       console.error("Error getting station:", error.message);
@@ -46,7 +49,7 @@ class StationService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/stations`,
+        buildPath(PATHS.STATIONS.CREATE, tournamentId, matchId),
         "POST",
         {
           data: {
@@ -55,6 +58,7 @@ class StationService {
           },
         },
       );
+      this.throwIfErrors(response);
       return Station.fromSingleResponse(response);
     } catch (error) {
       console.error("Error creating station:", error.message);
@@ -65,11 +69,13 @@ class StationService {
   async update(tournamentId, matchId, stationId, data) {
     try {
       if (!tournamentId || !matchId || !stationId || !data) {
-        throw new Error("tournamentId, matchId, stationId, and data are required");
+        throw new Error(
+          "tournamentId, matchId, stationId, and data are required",
+        );
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/stations/${stationId}`,
+        buildPath(PATHS.STATIONS.UPDATE, tournamentId, matchId, stationId),
         "PUT",
         {
           data: {
@@ -78,6 +84,7 @@ class StationService {
           },
         },
       );
+      this.throwIfErrors(response);
       return Station.fromSingleResponse(response);
     } catch (error) {
       console.error("Error updating station:", error.message);
@@ -91,10 +98,11 @@ class StationService {
         throw new Error("tournamentId, matchId, and stationId are required");
       }
 
-      await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/stations/${stationId}`,
+      const response = await this.client.request(
+        buildPath(PATHS.STATIONS.DELETE, tournamentId, matchId, stationId),
         "DELETE",
       );
+      this.throwIfErrors(response);
     } catch (error) {
       console.error("Error deleting station:", error.message);
       throw error;

@@ -1,13 +1,11 @@
-class States {
+const BaseModel = require('./base');
+class States extends BaseModel {
   /**
    * @param {Boolean} active
    */
   constructor(active = true) {
+    super();
     this.active = active;
-  }
-
-  static from(value) {
-    return value instanceof States ? value : new States(value);
   }
 
   toJSON() {
@@ -17,7 +15,7 @@ class States {
   }
 }
 
-class TimeStamps {
+class TimeStamps extends BaseModel {
   /**
    * @param {String} created_at
    * @param {String} updated_at
@@ -26,12 +24,9 @@ class TimeStamps {
     created_at = "2023-04-21T14:29:06.374Z",
     updated_at = "2023-04-21T14:31:45.981Z",
   ) {
+    super();
     this.created_at = created_at;
     this.updated_at = updated_at;
-  }
-
-  static from(value) {
-    return value instanceof TimeStamps ? value : new TimeStamps(value);
   }
 
   toJSON() {

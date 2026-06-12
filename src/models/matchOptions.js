@@ -1,4 +1,5 @@
-class TimeStamps {
+const BaseModel = require('./base');
+class TimeStamps extends BaseModel {
   /**
    * @param {String} created_at
    * @param {String} updated_at
@@ -7,14 +8,9 @@ class TimeStamps {
     created_at = "2023-04-21T14:29:06.374Z",
     updated_at = "2023-04-21T14:31:45.981Z",
   ) {
+    super();
     this.created_at = created_at;
     this.updated_at = updated_at;
-  }
-
-  static from(value) {
-    return value instanceof TimeStamps
-      ? value
-      : new TimeStamps(value?.created_at, value?.updated_at);
   }
 
   toJSON() {
@@ -25,16 +21,11 @@ class TimeStamps {
   }
 }
 
-class RelationshipData {
+class RelationshipData extends BaseModel {
   constructor({ id, type } = {}) {
+    super();
     this.id = id;
     this.type = type;
-  }
-
-  static from(value) {
-    return value instanceof RelationshipData
-      ? value
-      : new RelationshipData(value || {});
   }
 
   toJSON() {
@@ -45,15 +36,10 @@ class RelationshipData {
   }
 }
 
-class PlayerRelationship {
+class PlayerRelationship extends BaseModel {
   constructor({ data } = {}) {
+    super();
     this.data = RelationshipData.from(data);
-  }
-
-  static from(value) {
-    return value instanceof PlayerRelationship
-      ? value
-      : new PlayerRelationship(value || {});
   }
 
   toJSON() {
@@ -63,16 +49,11 @@ class PlayerRelationship {
   }
 }
 
-class MatchRelationships {
+class MatchRelationships extends BaseModel {
   constructor({ player1, player2 } = {}) {
+    super();
     this.player1 = PlayerRelationship.from(player1);
     this.player2 = PlayerRelationship.from(player2);
-  }
-
-  static from(value) {
-    return value instanceof MatchRelationships
-      ? value
-      : new MatchRelationships(value || {});
   }
 
   toJSON() {

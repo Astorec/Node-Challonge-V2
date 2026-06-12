@@ -1,7 +1,7 @@
-class user{
+class User{
     constructor({ id, type, attributes = {} }) {
-        id = id;
-        type = type;
+        this.id = id;
+        this.type = type;
 
         this.username = attributes.username;
         this.email = attributes.email;
@@ -9,4 +9,4 @@ class user{
     }
 }
 
-module.exports = user;
+module.exports = User;

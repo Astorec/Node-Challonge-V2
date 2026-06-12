@@ -6,17 +6,15 @@ const StationService = require("./services/stationService");
 const MatchAttachmentService = require("./services/matchAttachmentService");
 const UserService = require("./services/userService");
 
-const DEFAULT_BASE_URL = "https://api.challonge.com/v2.1";
-const DEFAULT_OAUTH_BASE_URL = "https://api.challonge.com";
-
+const { BASE_URL, OAUTH_BASE_URL } = require("./constants");
 class ChallongeClient {
   constructor({
     username,
     apiKey,
     accessToken,
     refreshToken,
-    baseUrl = DEFAULT_BASE_URL,
-    oauthBaseUrl = DEFAULT_OAUTH_BASE_URL,
+    baseUrl = BASE_URL,
+    oauthBaseUrl = OAUTH_BASE_URL,
     authType = "v1",
   } = {}) {
     if (authType === "v1") {
@@ -73,7 +71,7 @@ class ChallongeClient {
     return headers;
   }
 
-  static fromToken(accessToken, baseUrl = DEFAULT_BASE_URL) {
+  static fromToken(accessToken, baseUrl = BASE_URL) {
     return new ChallongeClient({
       authType: "bearer",
       accessToken: accessToken,
@@ -266,10 +264,10 @@ class ChallongeClient {
 
   async getCurrentUser() {
     // The API endpoint from your screenshot
-    const response = await this.request("/me.json", "GET");
+    const response = await this.user.get();
 
     // Based on the response structure in your image: { data: { id, type, attributes } }
-    if (response && response.data) {
+    if (response) {
       return this.user.get();
     }
 

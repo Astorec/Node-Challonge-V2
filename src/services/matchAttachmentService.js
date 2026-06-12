@@ -1,8 +1,10 @@
 const MatchAttachment = require("../models/matchAttachment");
+const BaseService = require("./base");
+const {buildPath, buildQueryParams, PATHS} = require ("../constants");
 
-class MatchAttachmentService {
+class MatchAttachmentService extends BaseService {
   constructor(client) {
-    this.client = client;
+    super(client);
   }
 
   async list(tournamentId, matchId) {
@@ -12,9 +14,10 @@ class MatchAttachmentService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/attachments`,
+        buildPath(PATHS.MATCHES.ATTACHMENTS.GET, tournamentId, matchId),
         "GET",
       );
+      this.throwIfErrors(response);
       return MatchAttachment.fromListResponse(response);
     } catch (error) {
       console.error("Error listing match attachments:", error.message);
@@ -29,7 +32,7 @@ class MatchAttachmentService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/attachments`,
+        buildPath(PATHS.MATCHES.ATTACHMENTS.CREATE, tournamentId, matchId),
         "POST",
         {
           data: {
@@ -38,6 +41,7 @@ class MatchAttachmentService {
           },
         },
       );
+      this.throwIfErrors(response);
       return MatchAttachment.fromSingleResponse(response);
     } catch (error) {
       console.error("Error creating match attachment:", error.message);
@@ -52,7 +56,7 @@ class MatchAttachmentService {
       }
 
       await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/attachments/${attachmentId}`,
+        buildPath(PATHS.MATCHES.ATTACHMENTS.DELETE, tournamentId, matchId, attachmentId),
         "DELETE",
       );
     } catch (error) {

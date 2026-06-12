@@ -1,7 +1,9 @@
 const { States, TimeStamps } = require("./participantOptions");
+const BaseModel = require('./base');
 
-class Participant {
+class Participant extends BaseModel {
   constructor({ id, type, attributes = {} }) {
+    super();
     this.id = id;
     this.type = type;
 
@@ -18,14 +20,6 @@ class Participant {
 
   static fromResource(resource) {
     return new Participant(resource);
-  }
-
-  static fromListResponse(response) {
-    return (response.data || []).map(Participant.fromResource);
-  }
-
-  static fromSingleResponse(response) {
-    return Participant.fromResource(response.data);
   }
 }
 

@@ -11,8 +11,11 @@ const {
   FreeForAllOptions,
 } = require('./tournamentOptions');
 
-class Tournament {
+const BaseModel = require('./base');
+
+class Tournament extends BaseModel{
   constructor({ id, type, attributes = {} }) {
+    super();
     this.id = id;
     this.type = type;
 
@@ -41,14 +44,6 @@ class Tournament {
   
   static fromResource(resource) {
     return new Tournament(resource);
-  }
-
-  static fromListResponse(response) {
-    return (response.data || []).map(Tournament.fromResource);
-  }
-
-  static fromSingleResponse(response) {
-    return Tournament.fromResource(response.data);
   }
 }
 

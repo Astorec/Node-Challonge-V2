@@ -1,10 +1,11 @@
 const Participant = require("../models/participant");
-
-class ParticipantService {
+const BaseService = require("./base");
+const { buildPath, buildQueryParams, PATHS } = require("../constants");
+class ParticipantService extends BaseService {
   constructor(client) {
-    this.client = client;
+    super(client);
   }
- 
+
   async list(tournamentId, options = {}) {
     try {
       if (!tournamentId) {
@@ -13,9 +14,10 @@ class ParticipantService {
 
       const query = options ? `?${new URLSearchParams(options)}` : "";
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants${query}`,
+        buildPath(PATHS.PARTICIPANTS.GET, tournamentId) + query,
         "GET",
       );
+      throwIfErrors(response);
       return Participant.fromListResponse(response);
     } catch (error) {
       console.error("Error listing participants:", error.message);
@@ -30,9 +32,10 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/${participantId}`,
+        buildPath(PATHS.PARTICIPANTS.GET_BY_ID, tournamentId, participantId),
         "GET",
       );
+
       return Participant.fromSingleResponse(response);
     } catch (error) {
       console.error("Error getting participant:", error.message);
@@ -47,7 +50,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants`,
+        buildPath(PATHS.PARTICIPANTS.CREATE, tournamentId),
         "POST",
         {
           data: {
@@ -70,7 +73,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/${participantId}`,
+        buildPath(PATHS.PARTICIPANTS.UPDATE, tournamentId, participantId),
         "PUT",
         {
           data: {
@@ -93,7 +96,7 @@ class ParticipantService {
       }
 
       await this.client.request(
-        `/tournaments/${tournamentId}/participants/${participantId}`,
+        buildPath(PATHS.PARTICIPANTS.DELETE, tournamentId, participantId),
         "DELETE",
       );
     } catch (error) {
@@ -109,7 +112,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/bulk_create`,
+        buildPath(PATHS.PARTICIPANTS.BULK_CREATE, tournamentId),
         "POST",
         { participants },
       );
@@ -127,7 +130,7 @@ class ParticipantService {
       }
 
       await this.client.request(
-        `/tournaments/${tournamentId}/participants/clear`,
+        buildPath(PATHS.PARTICIPANTS.CLEAR_ALL, tournamentId),
         "POST",
       );
     } catch (error) {
@@ -143,7 +146,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/randomize`,
+        buildPath(PATHS.PARTICIPANTS.RANDOMIZE, tournamentId),
         "POST",
       );
       return Participant.fromListResponse(response);
@@ -160,7 +163,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/register`,
+        buildPath(PATHS.PARTICIPANTS.REGISTER_ME, tournamentId),
         "POST",
       );
       return Participant.fromSingleResponse(response);
@@ -177,7 +180,7 @@ class ParticipantService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/participants/unregister`,
+        buildPath(PATHS.PARTICIPANTS.UNREGISTER_ME, tournamentId),
         "POST",
       );
       return Participant.fromSingleResponse(response);

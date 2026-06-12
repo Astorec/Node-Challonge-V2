@@ -1,8 +1,9 @@
 const StationQueuer = require("../models/stationQueuer");
-
-class StationQueuerService {
+const BaseService = require("./base");
+const { buildPath, buildQueryParams, PATHS } = require ("../constants");
+class StationQueuerService extends BaseService {
   constructor(client) {
-    this.client = client;
+     super(client);
   }
 
   async list(tournamentId, matchId) {
@@ -12,9 +13,10 @@ class StationQueuerService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/station_queuer`,
+        buildPath(PATHS.STATION_QUEUERS.LIST, tournamentId, matchId),
         "GET",
       );
+      this.throwIfErrors(response);
       return StationQueuer.fromListResponse(response);
     } catch (error) {
       console.error("Error listing station queuers:", error.message);
@@ -29,9 +31,10 @@ class StationQueuerService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/station_queuer`,
+        buildPath(PATHS.STATION_QUEUERS.GET, tournamentId, matchId),
         "GET",
       );
+      this.throwIfErrors(response);
       return StationQueuer.fromSingleResponse(response);
     } catch (error) {
       console.error("Error getting station queuer:", error.message);
@@ -46,7 +49,7 @@ class StationQueuerService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/station_queuer`,
+        buildPath(PATHS.STATION_QUEUERS.CREATE, tournamentId, matchId),
         "POST",
         {
           data: {
@@ -55,6 +58,7 @@ class StationQueuerService {
           },
         },
       );
+      this.throwIfErrors(response);
       return StationQueuer.fromSingleResponse(response);
     } catch (error) {
       console.error("Error creating station queuer:", error.message);
@@ -69,7 +73,7 @@ class StationQueuerService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/station_queuer`,
+        buildPath(PATHS.STATION_QUEUERS.UPDATE, tournamentId, matchId),
         "PUT",
         {
           data: {
@@ -78,6 +82,7 @@ class StationQueuerService {
           },
         },
       );
+      this.throwIfErrors(response);
       return StationQueuer.fromSingleResponse(response);
     } catch (error) {
       console.error("Error updating station queuer:", error.message);
@@ -92,9 +97,10 @@ class StationQueuerService {
       }
 
       await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/station_queuer`,
+        buildPath(PATHS.STATION_QUEUERS.DELETE, tournamentId, matchId),
         "DELETE",
       );
+      this.throwIfErrors(response);
     } catch (error) {
       console.error("Error deleting station queuer:", error.message);
       throw error;

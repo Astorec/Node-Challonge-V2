@@ -1,12 +1,18 @@
 const User = require("../models").User;
-class UserService {
+const BaseService = require("./base");
+const { buildPath, PATHS } = require("../constants");
+class UserService extends BaseService {
   constructor(client) {
-    this.client = client;
+    super(client);
   }
 
   async get() {
     try {
-      const response = await this.client.request("/me", "GET");
+      const response = await this.client.request(
+        buildPath(PATHS.USER.GET),
+        "GET",
+      );
+      this.throwIfErrors(response);
       if (response && response.data) {
         return new User({
           id: response.data.id,

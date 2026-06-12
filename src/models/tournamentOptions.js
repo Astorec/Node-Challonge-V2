@@ -1,16 +1,13 @@
-class TournamentNotifications {
+const BaseModel = require("./base");
+
+class TournamentNotifications extends BaseModel {
   constructor({
     upon_matches_open = false,
     upon_tournament_ends = false,
   } = {}) {
+    super();
     this.upon_matches_open = upon_matches_open;
     this.upon_tournament_ends = upon_tournament_ends;
-  }
-
-  static from(value) {
-    return value instanceof TournamentNotifications
-      ? value
-      : new TournamentNotifications(value);
   }
 
   toJSON() {
@@ -25,21 +22,15 @@ class TournamentNotifications {
  * @param {Number} consolation_matches_target_rank - Single or Double Elim only. Helps break up ties in final placement
  * @param {Boolean} accept_attachments - Whether to allow attachments uploads
  */
-class TournamentMatchOptions {
+class TournamentMatchOptions extends BaseModel {
   constructor({
     consolation_matches_target_rank = 0,
     accept_attachments = false,
   } = {}) {
+    super();
     this.consolation_matches_target_rank = consolation_matches_target_rank;
     this.accept_attachments = accept_attachments;
   }
-
-  static from(value) {
-    return value instanceof TournamentMatchOptions
-      ? value
-      : new TournamentMatchOptions(value);
-  }
-
   toJSON() {
     return {
       consolation_matches_target_rank: this.consolation_matches_target_rank,
@@ -53,21 +44,16 @@ class TournamentMatchOptions {
  * @param {Number} signup_cap - Max number of participants allowed to sign up
  * @param {Number} check_in_duration - Duration of check-in period in minutes. 0 is the default and mean no-check in period.
  */
-class TournamentRegistrationOptions {
+class TournamentRegistrationOptions extends BaseModel {
   constructor({
     open_signup = false,
     signup_cap = 0,
     check_in_duration = 0,
   } = {}) {
+    super();
     this.open_signup = open_signup;
     this.signup_cap = signup_cap;
     this.check_in_duration = check_in_duration;
-  }
-
-  static from(value) {
-    return value instanceof TournamentRegistrationOptions
-      ? value
-      : new TournamentRegistrationOptions(value);
   }
 
   toJSON() {
@@ -83,16 +69,11 @@ class TournamentRegistrationOptions {
  * @param {Boolean} hide_seeds - Whether to hide seed information
  * @param {Boolean} sequential_pairings - Whether to use sequential pairings
  */
-class TournamentSeedingOptions {
+class TournamentSeedingOptions extends BaseModel {
   constructor({ hide_seeds = false, sequential_pairings = false } = {}) {
+    super();
     this.hide_seeds = hide_seeds;
     this.sequential_pairings = sequential_pairings;
-  }
-
-  static from(value) {
-    return value instanceof TournamentSeedingOptions
-      ? value
-      : new TournamentSeedingOptions(value);
   }
 
   toJSON() {
@@ -107,20 +88,15 @@ class TournamentSeedingOptions {
  * @param {Boolean} auto_assign - Whether to automatically assign stations to matches
  * @param {Boolean} only_start_matches_with_assigned_stations - Whether to only start matches that have stations assigned
  */
-class TournamentStationOptions {
+class TournamentStationOptions extends BaseModel {
   constructor({
     auto_assign = false,
     only_start_matches_with_assigned_stations = false,
   } = {}) {
+    super();
     this.auto_assign = auto_assign;
     this.only_start_matches_with_assigned_stations =
       only_start_matches_with_assigned_stations;
-  }
-
-  static from(value) {
-    return value instanceof TournamentStationOptions
-      ? value
-      : new TournamentStationOptions(value);
   }
 
   toJSON() {
@@ -137,7 +113,7 @@ class TournamentStationOptions {
  * @param {Number} group_size - The number of participants in each group
  * @param {Number} participant_count_to_advance_per_group - The number of participants from each group that advance to the next stage
  */
-class TournamentGroupStageOptions {
+class TournamentGroupStageOptions extends BaseModel {
   constructor({
     stage_type = "round robin",
     group_size = 4,
@@ -151,6 +127,7 @@ class TournamentGroupStageOptions {
     split_participants = false,
     tie_breaks = [],
   } = {}) {
+    super();
     this.stage_type = stage_type;
     this.group_size = group_size;
     this.participant_count_to_advance_per_group =
@@ -163,12 +140,6 @@ class TournamentGroupStageOptions {
     this.rr_pts_for_game_tie = rr_pts_for_game_tie;
     this.split_participants = split_participants;
     this.tie_breaks = tie_breaks;
-  }
-
-  static from(value) {
-    return value instanceof TournamentGroupStageOptions
-      ? value
-      : new TournamentGroupStageOptions(value);
   }
 
   toJSON() {
@@ -189,16 +160,11 @@ class TournamentGroupStageOptions {
   }
 }
 
-class DoubleEliminationOptions {
+class DoubleEliminationOptions extends BaseModel {
   constructor({ split_participants = false, grand_final = false } = {}) {
+    super();
     this.split_participants = split_participants;
     this.grand_final = grand_final;
-  }
-
-  static from(value) {
-    return value instanceof DoubleEliminationOptions
-      ? value
-      : new DoubleEliminationOptions(value);
   }
 
   toJSON() {
@@ -209,7 +175,7 @@ class DoubleEliminationOptions {
   }
 }
 
-class RoundRobinOptions {
+class RoundRobinOptions extends BaseModel {
   constructor({
     iterations = 1,
     ranking = "",
@@ -218,18 +184,13 @@ class RoundRobinOptions {
     pts_for_game_win = 0,
     pts_for_game_tie = 0,
   } = {}) {
+    super();
     this.iterations = iterations;
     this.ranking = ranking;
     this.pts_for_match_win = pts_for_match_win;
     this.pts_for_match_tie = pts_for_match_tie;
     this.pts_for_game_win = pts_for_game_win;
     this.pts_for_game_tie = pts_for_game_tie;
-  }
-
-  static from(value) {
-    return value instanceof RoundRobinOptions
-      ? value
-      : new RoundRobinOptions(value);
   }
 
   toJSON() {
@@ -244,7 +205,7 @@ class RoundRobinOptions {
   }
 }
 
-class SwissOptions {
+class SwissOptions extends BaseModel {
   constructor({
     rounds = 0,
     ranking = "",
@@ -254,6 +215,7 @@ class SwissOptions {
     pts_for_game_tie = 0,
     pts_for_bye = 1,
   } = {}) {
+    super();
     this.rounds = rounds;
     this.ranking = ranking;
     this.pts_for_match_win = pts_for_match_win;
@@ -261,10 +223,6 @@ class SwissOptions {
     this.pts_for_game_win = pts_for_game_win;
     this.pts_for_game_tie = pts_for_game_tie;
     this.pts_for_bye = pts_for_bye;
-  }
-
-  static from(value) {
-    return value instanceof SwissOptions ? value : new SwissOptions(value);
   }
 
   toJSON() {
@@ -280,17 +238,12 @@ class SwissOptions {
   }
 }
 
-class FreeForAllOptions {
+class FreeForAllOptions extends BaseModel {
   constructor({ ranking = "" } = {}) {
+    super();
     this.ranking = ranking;
   }
-
-  static from(value) {
-    return value instanceof FreeForAllOptions
-      ? value
-      : new FreeForAllOptions(value);
-  }
-
+  
   toJSON() {
     return {
       ranking: this.ranking,
@@ -298,7 +251,7 @@ class FreeForAllOptions {
   }
 }
 
-class TournamentOptions {
+class TournamentOptions extends BaseModel {
   static normalizeOptions(options, Model) {
     if (options == null) return null;
     return Model.from(options).toJSON();

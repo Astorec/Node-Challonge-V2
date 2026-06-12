@@ -1,8 +1,9 @@
 const Match = require("../models/match");
-
-class MatchService {
+const BaseService = require("./base");
+const { buildPath, buildQueryParams, PATHS } = require ("../constants");
+class MatchService extends BaseService {
   constructor(client) {
-    this.client = client;
+     super(client);
   }
 
   async list(tournamentId, options = {}) {
@@ -13,9 +14,10 @@ class MatchService {
 
       const query = options ? `?${new URLSearchParams(options)}` : "";
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches${query}`,
+        buildPath(PATHS.MATCHES.GET, tournamentId) + query,
         "GET",
       );
+      this.throwIfErrors(response);
       return Match.fromListResponse(response);
     } catch (error) {
       console.error("Error listing matches:", error.message);
@@ -30,9 +32,10 @@ class MatchService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}`,
+        buildPath(PATHS.MATCHES.GET_BY_ID, tournamentId, matchId),
         "GET",
       );
+      this.throwIfErrors(response);
       return Match.fromSingleResponse(response);
     } catch (error) {
       console.error("Error getting match:", error.message);
@@ -47,10 +50,11 @@ class MatchService {
       }
 
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/matches/${matchId}/change_state`,
+        buildPath(PATHS.MATCHES.CHANGE_STATE, tournamentId, matchId),
         "POST",
         { state },
       );
+      this.throwIfErrors(response);
       return Match.fromSingleResponse(response);
     } catch (error) {
       console.error("Error changing match state:", error.message);

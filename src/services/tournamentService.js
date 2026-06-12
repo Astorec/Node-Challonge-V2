@@ -1,19 +1,22 @@
 const Tournament = require("../models/tournament");
-
-class TournamentService {
+const BaseService = require("./base");
+const { buildPath, buildQueryParams, PATHS } = require("../constants");
+class TournamentService extends BaseService {
   constructor(client) {
-    this.client = client;
+    super(client);
   }
 
   async list(params) {
     try {
       const query = params ? `?${new URLSearchParams(params)}` : "";
-      const response = await this.client.request(`/tournaments${query}`, "GET");
+      const path = buildPath(PATHS.TOURNAMENTS.GET) + query;
+      const response = await this.client.request(path, "GET");
       if (!response || !response.data) {
         throw new Error("Invalid response format: 'data' field is missing");
       } else if (response.data.errors) {
         throw new Error(`API Error: ${JSON.stringify(response.data.errors)}`);
       }
+      this.throwIfErrors(response);
       return Tournament.fromListResponse(response);
     } catch (error) {
       console.error("Error fetching tournaments:", error);
@@ -24,7 +27,7 @@ class TournamentService {
   async get(tournamentId) {
     try {
       const response = await this.client.request(
-        `/tournaments/${tournamentId}`,
+        buildPath(PATHS.TOURNAMENTS.GET, tournamentId),
         "GET",
       );
 
@@ -33,6 +36,7 @@ class TournamentService {
       } else if (response.data.errors) {
         throw new Error(`API Error: ${JSON.stringify(response.data.errors)}`);
       }
+      this.throwIfErrors(response);
       return Tournament.fromSingleResponse(response);
     } catch (error) {
       console.error(
@@ -45,19 +49,17 @@ class TournamentService {
 
   async create(data) {
     try {
-      const response = await this.client.request("/tournaments", "POST", {
-        data: {
-          type: "tournament",
-          attributes: data,
+      const response = await this.client.request(
+        buildPath(PATHS.TOURNAMENTS.CREATE),
+        "POST",
+        {
+          data: {
+            type: "tournament",
+            attributes: data,
+          },
         },
-      });
-
-      if (!response || !response.data) {
-        throw new Error("Invalid response format: 'data' field is missing");
-      } else if (response.data.errors) {
-        throw new Error(`API Error: ${JSON.stringify(response.data.errors)}`);
-      }
-
+      );
+      this.throwIfErrors(response);
       return Tournament.fromSingleResponse(response);
     } catch (error) {
       console.error("Error creating tournament:", error);
@@ -104,7 +106,7 @@ class TournamentService {
   async update(tournamentId, data) {
     try {
       const response = await this.client.request(
-        `/tournaments/${tournamentId}`,
+        buildPath(PATHS.TOURNAMENTS.UPDATE, tournamentId),
         "PUT",
         {
           data: {
@@ -114,12 +116,7 @@ class TournamentService {
           },
         },
       );
-
-      if (!response || !response.data) {
-        throw new Error("Invalid response format: 'data' field is missing");
-      } else if (response.data.errors) {
-        throw new Error(`API Error: ${JSON.stringify(response.data.errors)}`);
-      }
+      this.throwIfErrors(response);
 
       return Tournament.fromSingleResponse(response);
     } catch (error) {
@@ -133,7 +130,10 @@ class TournamentService {
 
   async delete(tournamentId) {
     try {
-      await this.client.request(`/tournaments/${tournamentId}`, "DELETE");
+      await this.client.request(
+        buildPath(PATHS.TOURNAMENTS.DELETE, tournamentId),
+        "DELETE",
+      );
     } catch (error) {
       console.error(
         `Error deleting tournament with ID ${tournamentId}:`,
@@ -146,7 +146,7 @@ class TournamentService {
   async changeState(tournamentId, state) {
     try {
       const response = await this.client.request(
-        `/tournaments/${tournamentId}/change_state`,
+        buildPath(PATHS.TOURNAMENTS.CHANGE_STATE, tournamentId),
         "POST",
         { state },
       );

@@ -1,9 +1,7 @@
-const {
-  TimeStamps,
-  MatchRelationships,
-} = require("./matchOptions");
+const { TimeStamps, MatchRelationships } = require("./matchOptions");
+const BaseModel = require('./base');
 
-class Match {
+class Match extends BaseModel {
   constructor({ id, type, attributes = {} }) {
     this.id = id;
     this.type = type;
@@ -18,7 +16,10 @@ class Match {
     this.timestamps = TimeStamps.from(attributes.timestamps);
     this.relationships = MatchRelationships.from(attributes.relationships);
     this.winner_id = attributes.winner_id;
-    this.relationships = MatchRelationships.from(attributes.relationships);
+  }
+
+  static fromResource(data) {
+    return new Match(data);
   }
 }
 

@@ -1,8 +1,13 @@
 {
   "name": "challonge-v2",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A Node.js wrapper for the Challonge v2 API",
   "main": "src/index.js",
+  "Author": "Astorec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/randerson1998/Node-Challonge-V2.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node start.js"
